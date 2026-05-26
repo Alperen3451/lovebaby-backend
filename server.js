@@ -3,13 +3,17 @@ import cors from "cors";
 import fetch from "node-fetch";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
 const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
 
 app.get("/", (req, res) => {
-  res.json({ ok: true, message: "LoveBaby GenAI backend çalışıyor" });
+  res.json({
+    ok: true,
+    message: "LoveBaby GenAI backend çalışıyor"
+  });
 });
 
 app.post("/generate-baby", async (req, res) => {
@@ -23,23 +27,26 @@ baby gender: ${gender},
 premium mobile app result, natural skin, detailed face
 `;
 
-    const response = await fetch("https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${REPLICATE_API_TOKEN}`,
-        "Content-Type": "application/json",
-        "Prefer": "wait"
-      },
-      body: JSON.stringify({
-        input: {
-          prompt,
-          aspect_ratio: "1:1",
-          num_outputs: 1,
-          output_format: "webp",
-          output_quality: 90
-        }
-      })
-    });
+    const response = await fetch(
+      "https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${REPLICATE_API_TOKEN}`,
+          "Content-Type": "application/json",
+          Prefer: "wait"
+        },
+        body: JSON.stringify({
+          input: {
+            prompt,
+            aspect_ratio: "1:1",
+            num_outputs: 1,
+            output_format: "webp",
+            output_quality: 90
+          }
+        })
+      }
+    );
 
     const data = await response.json();
 
@@ -57,7 +64,8 @@ premium mobile app result, natural skin, detailed face
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
